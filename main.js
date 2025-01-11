@@ -2,7 +2,7 @@ async function translate(text, from, to, options) {
     const { utils } = options;
     const { tauriFetch: fetch } = utils;
 
-    const URL = "https://api.deepseek.com";
+    const URL = "https://api.deepseek.com/chat/completions";
 
     const body = {
         source_language: from,
