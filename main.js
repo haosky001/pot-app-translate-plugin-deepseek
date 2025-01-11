@@ -1,24 +1,31 @@
 async function translate(text, from, to, options) {
-    const { config, utils } = options;
+    const { utils } = options;
     const { tauriFetch: fetch } = utils;
-    let { requestPath: url } = config;
-    let plain_text = text.replaceAll("/", "@@");
-    let encode_text = encodeURIComponent(plain_text);
-    if (url === undefined || url.length === 0) {
-        url = "lingva.pot-app.com"
+
+    const URL = "https://api.deepseek.com";
+
+    const body = {
+        source_language: from,
+        target_language: to,
+        text
     }
-    if (!url.startsWith("http")) {
-        url = `https://${url}`;
-    }
-    const res = await fetch(`${url}/api/v1/${from}/${to}/${encode_text}`, {
-        method: 'GET',
+    const headers = {
+        'content-type': 'application/json'
+    };
+    let res = await fetch(URL, {
+        method: 'POST',
+        headers: headers,
+        body: {
+            type: 'Json',
+            payload: body
+        },
     });
 
     if (res.ok) {
         let result = res.data;
         const { translation } = result;
         if (translation) {
-            return translation.replaceAll("@@", "/");;
+            return translation;
         } else {
             throw JSON.stringify(result.trim());
         }
